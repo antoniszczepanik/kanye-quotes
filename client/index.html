@@ -15,17 +15,14 @@
       with regards to their sentiment.
     </p>
 
-    <form>
+    <form id="get_quotes_form">
       I'd like to analyse
-      <input type="number" id="quote_number" name="quote_number" min="5" max="20">
-      Kanye quotes
-      <input type="submit" value="Go!">
+      <input type="number" id="quote_number" name="quote_number" min="5" max="20" value="5">
+      Kanye quotes.
+      <input type="submit" value="Go!"></input>
     </form>
     
     <ul id="quotes">
-      <li>Some quote 1</li>
-      <li>Some quote 2</li>
-      <li>Some quote 3</li>
     </ul>
 
     <p> 
@@ -49,6 +46,8 @@
         <a href="https://sentim-api.herokuapp.com/">https://sentim-api.herokuapp.com/</a>
       </p>
     </footer> 
+
+    <script src="script.js"></script>
 
 </body>
 
