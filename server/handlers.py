@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from http.server import BaseHTTPRequestHandler
+from http.server import SimpleHTTPRequestHandler
 import json
 import re
 import requests
@@ -10,7 +10,7 @@ from config import cfg
 
 class BaseHandler(ABC):
 
-    def __init__(self, handler: BaseHTTPRequestHandler):
+    def __init__(self, handler: SimpleHTTPRequestHandler):
         self.handler = handler
         if not self.validate():
             self.handler.send_error(400, "Bad request")
