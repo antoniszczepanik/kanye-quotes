@@ -6,6 +6,7 @@ import requests
 import time
 
 from config import cfg
+import async_utils
 
 
 class BaseHandler(ABC):
@@ -53,18 +54,15 @@ class QuotesHandler(BaseHandler):
         return True
 
     def get_response(self) -> dict:
-        quotes = set()
-        while len(quotes) < self.quote_n:
-            try:
-                response = requests.get(cfg["SERVER"]["KANYE_HOST"])
-            except requests.exceptions.RequestException as e:
-                self.handler.send_error(500, 'Kanye API may have some problems...')
-            quotes.add(response.json()["quote"])
-            # Let's be polite :)
-            time.sleep(float(cfg["SERVER"]["KANYE_REQUEST_RATE"]))
-
+        try:
+            quote_texts = async_utils.get_unique_responses_async(
+                self.quote_n,
+                cfg["SERVER"]["KANYE_HOST"],
+            )
+        except requests.exceptions.RequestException as e:
+            self.handler.send_error(500, 'Kanye API may have some problems...')
         return {
-            "quotes": list(quotes)
+            "quotes": [json.loads(q)["quote"] for q in quote_texts]
         }
 
 
@@ -97,19 +95,19 @@ class SentimentHandler(BaseHandler):
         return True
 
     def get_response(self) -> dict:
-        quotes = self.post_data["quotes"]
-        quote_polarity = {}
-        for quote in quotes:
-            try:
-                response = requests.post(
-                    cfg["SERVER"]["SENTIM_HOST"],
-                    json={"text": quote},
-                )
-            except requests.exceptions.RequestException as e:
-                self.handler.send_error(500, ' Sentim API may have some problems...')
-            quote_polarity[quote] = float(response.json()["result"]["polarity"])
-            # Let's be polite :)
-            time.sleep(float(cfg["SERVER"]["SENTIM_REQUEST_RATE"]))
+        data_to_post = [{"text": q} for q in self.post_data["quotes"]]
+        try:
+            responses = async_utils.post_data_async(
+                data_to_post,
+                cfg["SERVER"]["SENTIM_HOST"],
+            )
+        except requests.exceptions.RequestException as e:
+            self.handler.send_error(500, ' Sentim API may have some problems...')
+
+        jsons = [r.json() for r in responses]
+        quote_polarity = {
+            j["sentences"][0]["sentence"]: float(j["result"]["polarity"]) for j in jsons
+        }
         return self.construct_counts_response(quote_polarity)
 
     def construct_counts_response(self, quote_polarity):
