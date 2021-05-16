@@ -1,32 +1,25 @@
 function KanyeClient() {
-
   API_ROOT = "http://localhost:8000/api/v1";
 
   let form = document.getElementById("get_quotes_form");
-  form.addEventListener('submit', getAndAnalyzeQuotes);
+  form.addEventListener("submit", getAndAnalyzeQuotes);
 
   async function getAndAnalyzeQuotes(event) {
     event.preventDefault();
-    let quote_input = document.getElementById("quote_number");
-    // Rely on html validation
-    if (quote_input.validity.invalid) {
-      return;
-    }
-    getQuotes(quote_number.value);
-  }
-
-  async function getQuotes(quote_number) {
+    document.getElementById("results").style.display = "none";
     document.getElementById("quotes").innerHTML =
       "Wating for some Kanye quotes...";
+    let quote_number = document.getElementById("quote_number").value;
     const url = API_ROOT + "/quotes?number=" + quote_number;
-    fetch(url)
-      .then(handleResponse)
-      .then(renderQuotes)
-      .catch(function (error) {
-        console.log(error);
-        let error_text = "Can't get quotes now. Sorry :(";
-        document.getElementById("quotes").innerHTML = error_text;
-      });
+    let quotes = await fetch(url)
+        .then(handleResponse)
+        .then(renderQuotes)
+        .catch(function (error) {
+          console.log(error);
+          document.getElementById("results_status").innerHTML =
+            "Can't get quotes now. Sorry :(";
+        });
+    getQuoteAnalysis(quotes);
   }
   async function handleResponse(response) {
     if (response.ok) {
@@ -48,9 +41,33 @@ function KanyeClient() {
     return quotes_json["quotes"];
   }
 
-  async function getQuoteAnalysis() {
-    pass;
+  async function getQuoteAnalysis(quotes) {
+    document.getElementById("results_status").innerHTML =
+      "Wating for sentiment analysis...";
+    fetch(API_ROOT + "/sentiment", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ quotes: quotes }),
+    })
+      .then(handleResponse)
+      .then(renderAnalysis)
+      .catch(function (error) {
+        console.log(error);
+        document.getElementById("results_status").innerHTML =
+          "Can't get sentiments now. Sorry :(";
+      });
   }
+
+  async function renderAnalysis(results) {
+    for (result of Object.keys(results)) {
+      document.getElementById(result).innerHTML = results[result];
+    }
+    document.getElementById("results").style.display = "block";
+    document.getElementById("results_status").innerHTML = "";
+  }
+
   return {
     getAndAnalyzeQuotes: getAndAnalyzeQuotes,
   };
