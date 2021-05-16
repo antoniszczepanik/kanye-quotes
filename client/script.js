@@ -1,5 +1,5 @@
 function KanyeClient() {
-  API_ROOT = "http://localhost:8000/api/v1";
+  API_ROOT = "/api/v1";
 
   let form = document.getElementById("get_quotes_form");
   form.addEventListener("submit", getAndAnalyzeQuotes);
