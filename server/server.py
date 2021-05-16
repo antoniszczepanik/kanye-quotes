@@ -13,7 +13,7 @@ class KanyeHTTPHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         self.parsed_path = urlparse(self.path)
         if self.api_root not in self.parsed_path.path:
-            # Let's just serve index.html file if it's not an API call
+            # Let's just serve index.html file if it's not an API call.
             # Superclass provides that functionality with the default
             # implementation.
             super().do_GET()

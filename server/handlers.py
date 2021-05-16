@@ -25,7 +25,7 @@ class BaseHandler(ABC):
 
     @abstractmethod
     def get_response(self) -> dict:
-        """ Should return a dictionary that will be parsed as json response """
+        """ Should return a dictionary that will send as a json response. """
         pass
 
     def respond(self, response: dict):

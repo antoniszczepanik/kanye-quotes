@@ -2,11 +2,10 @@
 This is a solution to some recruitment task in some company. 
 It's a webserver with a simple API and a client which allows you to
 analyse arbitrary number of Kanye West quotes with regards to their sentiment. 
-I had some time left so I decided to host it on my Raspberry :) It's avalable [here.](https://kanye.antoniszczepanik.com/)
+I had some time left so I decided to [host it on my Raspberry :)](https://kanye.antoniszczepanik.com/)
 
 ## How to run the project?
-To only requirement necessary to run the project is `Python 3.7+`. Only Python builtins
-are used!
+To run the project you will need `Python 3.7+`.
 
 Information on how to download and install Python could be found [here.](https://wiki.python.org/moin/BeginnersGuide/Download)
 If you want to jump straight to downloads here they are:
@@ -15,19 +14,44 @@ If you want to jump straight to downloads here they are:
 * On Debian you could just `sudo apt install python3.9 python3.9-dev`
 
 Then you can clone and run the project right away:
-
 ```
 git clone https://github.com/antoniszczepanik/kanye-quotes.git
-cd kanye-quotes && python3 server/server.py
+cd kanye-quotes
+pip install -r requirements.txt
+python3 server/server.py
 ```
 
 That's all! The site is available at `http://localhost:8000`.
 
+If you wouldn't like to pollute your environment with `requrements.txt` packages you
+can use any Python virual environment manager. For example using `venv`:
+
+On Unix/MacOS:
+```
+git clone https://github.com/antoniszczepanik/kanye-quotes.git
+cd kanye-quotes
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+python3 server/server.py
+```
+
+On Windows
+```
+git clone https://github.com/antoniszczepanik/kanye-quotes.git
+cd kanye-quotes
+python3 -m venv venv
+venv\Scripts\activate.bat
+pip install -r requirements.txt
+python3 server/server.py
+```
+
+
 ## How to deploy the project?
 To deploy the project is is enough to:
 
-	1. Run webserver in the background (i.e. `python3.9 server/server.py &` on Unix systems).
-	2. Point any webserver at `http://localhost:8000`.
+	1. Run server in the background (i.e. `python3.9 server/server.py &` on Unix systems).
+	2. Point any webserver (`Nginx`, `Apache`,...) at `http://localhost:8000`.
 
 ## About the solution
 
@@ -43,7 +67,7 @@ Web interface was used to present results because
 * It's user friendly. Many users are not comfortable with for example CLI interfaces. That's not the case with web, most users are familiar with it.
 
 I decided to implement server in Python because of limited time amount.
-The solution uses only Python builtins, the crucial one being HTTPServer.
+The solution uses Python builtins extensively, the crucial one being HTTPServer.
 I would not recommend to run this server production. Using a proper 
 framework and WSGI server would be more advised, however no Frameworks were allowed for this specific task.
 
