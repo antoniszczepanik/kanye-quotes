@@ -31,13 +31,13 @@ def get_unique_responses_async(target_response_number, *args, **kwargs):
     """
     Asynchronusly get responses until target_response_number of them
     are unique. Performs "rounds" of async requests. At each round tries to
-    get the difference between currently unique responses and target.
+    get the amount of responses that are still missing.
     Returns only response.text values.
     """
     unique = set()
     while len(unique) < target_response_number:
-        left = target_response_number - len(unique)
-        result = get_responses(left, *args, **kwargs)
+        responses_left_number = target_response_number - len(unique)
+        result = get_responses(responses_left_number, *args, **kwargs)
         [unique.add(r.text) for r in result]
     return list(unique)
 
