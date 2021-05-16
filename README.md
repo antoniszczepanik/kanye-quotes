@@ -99,7 +99,7 @@ pretty fast, even though only single process is used :)
 * **Data Params**
 
   Accepts JSON data with a list of quotes.
-  `{ "quotes" : ["quote1", "quote2", "quote3"] }`
+  `{ "quotes" : ["A branch was used", "when", "working on this solution"] }`
 
 
 * **Success Response:**
